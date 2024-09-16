@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "room-booking-QT",
-    "slug": "room-booking-QT",
+    "name": "study",
+    "slug": "study",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
