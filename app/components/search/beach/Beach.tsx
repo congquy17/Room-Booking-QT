@@ -58,68 +58,75 @@ const roomData = [
   },
 ];
 export default function Beach() {
-
+  const [rooms, setRooms] = React.useState(roomData);
   return (
     <ScrollView>
-      {roomData.map((room) => (
-        <View key={room.id} style={{ marginBottom: 20 }}>
-          <ImageBackground
-            style={{
-              borderRadius: 10,
-              overflow: "hidden",
-              height: 400,
-              width: "100%",
-            }}
-            source={{ uri: room.imageUrl }}
-          >
-            <TouchableOpacity>
-              <AntDesign
-                name="hearto"
-                size={24}
-                color="red"
-                style={{
-                  backgroundColor: "white",
-                  position: "absolute",
-                  padding: 10,
-                  top: 10,
-                  right: 10,
-                  borderRadius: 100,
-                }}
-              />
-            </TouchableOpacity>
-          </ImageBackground>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingTop: 10,
-            }}
-          >
-            <View>
-              <Text style={styles.h3}>{room.name}</Text>
-              <Text style={{ marginTop: 5 }}>{room.category}</Text>
-            </View>
-            <View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <AntDesign name="star" size={20} color="#eccd60" />
-                <Text>{room.rating}</Text>
-              </View>
-              <View style={{ marginTop: 5 }}>
-                <Text>${room.price}/night</Text>
-              </View>
-            </View>
-          </View>
-        </View>
+      {rooms.map((room) => (
+        // Hiển thị thông tin beach room
+        <BeachRoom room={room} key={room.id} />
       ))}
     </ScrollView>
   );
 }
+const BeachRoom = ({ room }:any) => {
+  
+  return (
+    <View key={room.id} style={{ marginBottom: 20 }}>
+    <ImageBackground
+      style={{
+        borderRadius: 10,
+        overflow: "hidden",
+        height: 400,
+        width: "100%",
+      }}
+      source={{ uri: room.imageUrl }}
+    >
+      <TouchableOpacity>
+        <AntDesign
+          name="hearto"
+          size={24}
+          color="red"
+          style={{
+            backgroundColor: "white",
+            position: "absolute",
+            padding: 10,
+            top: 10,
+            right: 10,
+            borderRadius: 100,
+          }}
+        />
+      </TouchableOpacity>
+    </ImageBackground>
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        paddingTop: 10,
+      }}
+    >
+      <View>
+        <Text style={styles.h3}>{room.name}</Text>
+        <Text style={{ marginTop: 5 }}>{room.category}</Text>
+      </View>
+      <View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <AntDesign name="star" size={20} color="#eccd60" />
+          <Text>{room.rating}</Text>
+        </View>
+        <View style={{ marginTop: 5 }}>
+          <Text>${room.price}/night</Text>
+        </View>
+      </View>
+    </View>
+  </View>
+  );
+};
 
 const styles = StyleSheet.create({
   h2: {
