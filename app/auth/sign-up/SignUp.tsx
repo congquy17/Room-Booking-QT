@@ -3,12 +3,8 @@ import React from 'react';
 import { useRouter } from 'expo-router';
 import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import ReactNativePhoneInput from 'react-native-phone-input';
-const SocialButton = ({ icon, text, borderColor, onPress }: any) => (
-    <TouchableOpacity style={[styles.socialButton, { borderColor }]} onPress={onPress}>
-        {icon}
-        <Text style={styles.socialButtonText}>{text}</Text>
-    </TouchableOpacity>
-);
+import Button from '@/components/Button';
+import Input from '@/components/Input';
 const PhoneInput = ({ value, onChange }: any) => (
     <ReactNativePhoneInput
         initialCountry={'VN'}
@@ -28,84 +24,44 @@ export default function SignUp() {
             <ScrollView style={{ marginTop: 50, flex: 1 }}>
                 <Text style={{ fontSize: 26, marginBottom: 30 }}>SignUp</Text>
                 <PhoneInput value={value} onChange={setValue} />
-                <TextInput
-                    secureTextEntry={true}
-                    style={{
-                        marginTop: 20,
-                        paddingHorizontal: 20,
-                        paddingVertical: 10,
-                        borderWidth: 1,
-                        borderColor: '#ded3d3d4'
-                    }}
-                    placeholder="Nhập mật khẩu"
-                />
-                <TextInput
-                    secureTextEntry={true}
-                    style={{
-                        marginTop: 20,
-                        paddingHorizontal: 20,
-                        paddingVertical: 10,
-                        borderWidth: 1,
-                        borderColor: '#ded3d3d4'
-                    }}
-                    placeholder="Nhập lại mật khẩu"
-                />
-                <TouchableOpacity
-                    style={{
-                        paddingVertical: 15,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginTop: 20,
-                        backgroundColor: '#00bdd5',
-                        borderRadius: 5
-                    }}
-                >
-                    <Text style={{ color: 'white' }}>Sign Up</Text>
-                </TouchableOpacity>
+
+                <Input placeholder="Nhập mật khẩu" onChangeText={() => {}} />
+                <Input placeholder="Nhập Lại mật khẩu" onChangeText={() => {}} />
+
+                <Button title="Sign Up" textColor="white" backgroundColor="#00bdd5" onPress={() => {}} />
                 <View style={{ marginTop: 20 }}>
-                    <SocialButton
+                    <Button
                         icon={<AntDesign name="apple-o" size={24} color="black" />}
-                        text="Connect with Apple"
+                        title="Connect with Apple"
                         borderColor="black"
+                        borderWidth={1}
                         onPress={() => {}}
                     />
-                    <SocialButton
+                    <Button
                         icon={<FontAwesome5 name="facebook" size={24} color="#3b9ce8" />}
-                        text="Connect with Facebook"
+                        title="Connect with Facebook"
                         borderColor="#3b9ce8"
+                        borderWidth={1}
                         onPress={() => {}}
                     />
-                    <SocialButton
+                    <Button
                         icon={<AntDesign name="google" size={24} color="#ca3f49" />}
-                        text="Connect with Google"
+                        title="Connect with Google"
                         borderColor="#c47d84"
                         onPress={() => {}}
+                        borderWidth={1}
                     />
                 </View>
-                <TouchableOpacity
-                    style={{ padding: 20, alignItems: 'center', justifyContent: 'center' }}
+
+                <Button
+                    title="Sign In"
+                    textColor="#00bdd5"
+                    textDecorationLine="underline"
                     onPress={() => router.push('/auth/sign-in/SignIn')}
-                >
-                    <Text
-                        style={{
-                            textDecorationLine: 'underline',
-                            color: '#00bdd5'
-                        }}
-                    >
-                        SignIn
-                    </Text>
-                </TouchableOpacity>
+                />
             </ScrollView>
         </View>
     );
-}
-{
-    /* <TouchableOpacity
-        style={{ padding: 20 }}
-        onPress={() => router.push("/auth/sign-in/SignIn")}
-      >
-        <Text>SignIn</Text>
-      </TouchableOpacity> */
 }
 const styles = StyleSheet.create({
     container: {
