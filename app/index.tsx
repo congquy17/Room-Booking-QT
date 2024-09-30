@@ -8,18 +8,20 @@ import SignIn from './views/auth/sign-in/SignIn';
 import SignUp from './views/auth/sign-up/SignUp';
 import Main from './views/Main';
 import DetailRoom from './views/DetailRoom';
-import Facilities from './components/Facilities';
+import Facilities from './views/Facilities';
+import Review from './views/Review';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator>
+                <Stack.Screen options={{ headerShown: false }} name="DetailRoom" component={DetailRoom} />
+                 <Stack.Screen options={{ headerShown: false }} name="Review" component={Review} />
+                 <Stack.Screen options={{ headerShown: false }} name="Facilities" component={Facilities} />
                  <Stack.Screen options={{ headerShown: false }} name="SignIn" component={SignIn} />
                  <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUp} /> 
                 <Stack.Screen options={{ headerShown: false }} name="Main" component={Main} />
-                 <Stack.Screen options={{ headerShown: false }} name="Facilities" component={Facilities} />
-                <Stack.Screen options={{ headerShown: false }} name="DetailRoom" component={DetailRoom} />
                
                 
             </Stack.Navigator>

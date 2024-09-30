@@ -1,12 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Dimensions, Linking } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 export default function Facilities() {
     const navigation = useNavigation();
@@ -14,14 +11,14 @@ export default function Facilities() {
 
     const Aline = ({ icon, title }) => {
         return (
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10,borderBlockColor:'black', }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10,borderBlockColor:'#fafafa',borderTopWidth:1 }}>
                 {icon}
                 <Text style={[styles.text, { fontSize: 15 }]}>{title}</Text>
             </View>
         );
     };
     return (
-        <>
+        <ScrollView>
             <View
                 style={{
                     padding: 10,
@@ -35,7 +32,7 @@ export default function Facilities() {
                     style={styles.backButton}
                     onPress={() => navigation.goBack()} // Quay lại trang trước đó
                 >
-                    <AntDesign name="left" size={20} color="black" style={{ marginLeft: 10 }} />
+                    <AntDesign name="left" size={20} color="black"  />
                 </TouchableOpacity>
                 <View style={{ backgroundColor: 'white', justifyContent: 'center', flexDirection: 'row' }}>
                     <Text style={{ fontSize: 20, fontWeight: 700 }}>Facilities & Services</Text>
@@ -63,7 +60,39 @@ export default function Facilities() {
                     <Aline icon={<FontAwesome name="tree" size={24} color="black" />} title="Garden" />
                 </View>
             </View>
-        </>
+            <View style={{ marginTop: 2, backgroundColor: 'white', paddingHorizontal: 10 }}>
+                <Text style={{ paddingTop: 10, fontWeight: 700, fontSize: 25 }}>Facilities</Text>
+                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                    <Text style={{fontSize:15,fontWeight:600}}>Cleaning & luandry</Text>
+                    
+                </View>
+                <View style={{ flexDirection: 'column', marginTop: 10 }}>
+                    <Aline icon={<MaterialIcons name="wifi" size={24} style={{ color: 'black' }} />} title="Wifi" />
+                    <Aline
+                        icon={<MaterialIcons name="kitchen" size={24} color="black" />}
+                        title="Kitckchen"
+                    />
+                    <Aline
+                        icon={<MaterialIcons name="sports-gymnastics" size={24} color="black" />}
+                        title="Exercise equipment"
+                    />
+                    <Aline icon={<MaterialCommunityIcons name="pool" size={24} color="black" />} title="Ppool" />
+                    <Aline icon={<FontAwesome name="tree" size={24} color="black" />} title="Garden" />
+                </View>
+            </View>
+            <View style={{ marginTop: 2, backgroundColor: 'white', paddingHorizontal: 10 }}>
+                <Text style={{ paddingTop: 10, fontWeight: 700, fontSize: 25 }}>Facilities</Text>
+               
+                <View style={{ flexDirection: 'column', marginTop: 10 }}>
+                    <Aline icon={<MaterialIcons name="wifi" size={24} style={{ color: 'black' }} />} title="Wifi" />
+                    <Aline
+                        icon={<MaterialIcons name="kitchen" size={24} color="black" />}
+                        title="Kitckchen"
+                    />
+                   
+                </View>
+            </View>
+        </ScrollView>
     );
 }
 

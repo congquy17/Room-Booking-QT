@@ -105,6 +105,7 @@ export default function DetailRoom({ navigation }) {
                             backgroundColor: '#fafafa',
                             padding: 15
                         }}
+                        onPress={() => navigation.navigate('Review')}
                     >
                         <View
                             style={{
@@ -120,6 +121,7 @@ export default function DetailRoom({ navigation }) {
                                 flexDirection: 'row',
                                 alignItems: 'center'
                             }}
+
                         >
                             <Text style={{ marginLeft: 5 }}>262 reviews</Text>
                             <AntDesign name="right" size={20} color="black" style={{ marginLeft: 10 }} />
