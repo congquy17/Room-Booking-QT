@@ -5,15 +5,19 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignIn from './auth/sign-in/SignIn';
 import SignUp from './auth/sign-up/SignUp';
 import { Redirect } from 'expo-router';
+import Search from './(tabs)/Search';
+import DetailRoom from './page/DetailRoom';
 const Stack = createNativeStackNavigator();
 export default function App() {
     return (
-        // <NavigationContainer independent={true}>
-        //     <Stack.Navigator>
-        //         <Stack.Screen name="SignIn" component={SignIn} />
-        //         <Stack.Screen name="SignUp" component={SignUp} />
-        //     </Stack.Navigator>
-        // </NavigationContainer>
-        <Redirect href={'/auth/sign-in/SignIn'} />
+        <NavigationContainer independent={true}>
+            <Stack.Navigator >
+                <Stack.Screen options={{ headerShown: false }} name="SignIn" component={SignIn} />
+                <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUp} />
+                <Stack.Screen options={{ headerShown: false }} name="Search" component={Search} />
+                <Stack.Screen options={{ headerShown: false }} name="DetailRoom" component={DetailRoom} />
+            </Stack.Navigator>
+        </NavigationContainer>
+        // <Redirect href={'/auth/sign-in/SignIn'} />
     );
 }
