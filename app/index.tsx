@@ -13,6 +13,7 @@ import Review from './views/Review';
 import Description from './views/Description';
 import ComfirmAndPay from './views/ComfirmAndPay';
 import Successfully from './views/Successfully';
+import ChatDetail from './views/ChatDetail';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
         <NavigationContainer independent={true}>
             <Stack.Navigator>
                 <Stack.Screen options={{ headerShown: false }} name="Main" component={Main} />
+                <Stack.Screen options={{ headerShown: false }} name="ChatDetail" component={ChatDetail} />
                 <Stack.Screen options={{ headerShown: false }} name="DetailRoom" component={DetailRoom} />
                  <Stack.Screen options={{ headerShown: false }} name="Review" component={Review} />
                  <Stack.Screen options={{ headerShown: false }} name="Facilities" component={Facilities} />
