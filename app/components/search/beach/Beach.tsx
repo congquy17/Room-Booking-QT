@@ -11,7 +11,8 @@ import React from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Item from "./Item";
 // Dữ liệu giả lập bên ngoài component
-const roomData = [
+// findall
+const roomData = [ 
   {
     id: 1,
     name: "Room with Ocean View",

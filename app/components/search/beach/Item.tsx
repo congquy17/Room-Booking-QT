@@ -6,9 +6,10 @@ import { useRouter } from 'expo-router';
 export default function Item({ room }: any) {
     const router = useRouter();
     const navigation = useNavigation();
+    // 5
     return (
         <View key={room.id} style={{ marginBottom: 20 }}>
-            <TouchableOpacity onPress={() => router.push('/page/DetailRoom')}>
+            <TouchableOpacity onPress={() => navigation.navigate("DetailRoom")}>
                 <ImageBackground
                     style={{
                         borderRadius: 10,

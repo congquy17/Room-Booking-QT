@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Dimensions, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useNavigation } from '@react-navigation/native';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-export default function DetailRoom() {
-    const navigation = useNavigation();
+import { router } from 'expo-router';
+export default function DetailRoom({ navigation }) {
+   
     const [clicked, setClicked] = React.useState(false);
     const [images, setImages] = React.useState([
         { id: 1, uri: 'https://picsum.photos/200/300' },
@@ -53,7 +53,6 @@ export default function DetailRoom() {
     };
 
     return (
-        <SafeAreaView>
             <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false}>
                 {/* img */}
                 <View>
@@ -164,6 +163,8 @@ export default function DetailRoom() {
                                 borderRadius: 10,
                                 borderWidth: 1
                             }}
+                            // onPress={() => router.push('/components/Facilities')}
+                            onPress={() => navigation.navigate('Facilities')}
                         >
                             <Text style={[styles.text, { fontSize: 20 }]}>Show All</Text>
                         </TouchableOpacity>
@@ -360,7 +361,6 @@ export default function DetailRoom() {
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-        </SafeAreaView>
     );
 }
 
