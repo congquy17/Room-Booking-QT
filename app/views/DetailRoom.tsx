@@ -15,6 +15,7 @@ export default function DetailRoom({ navigation }) {
         { id: 4, uri: 'https://picsum.photos/203/300' },
         { id: 5, uri: 'https://picsum.photos/204/300' }
     ]);
+    const [line,setLine] = React.useState(true)
     const feedbackData = [
         {
             id: 1,
@@ -200,6 +201,7 @@ export default function DetailRoom({ navigation }) {
                                 marginTop: 10,
                                 padding: 15
                             }}
+                            onPress={() => navigation.navigate('Review')}
                         >
                             <View
                                 style={{
@@ -272,7 +274,7 @@ export default function DetailRoom({ navigation }) {
                         </View>
                     </View>
                     <Text style={{ paddingTop: 10, fontWeight: 500, fontSize: 17 }}>Checkin policles</Text>
-                    <Text numberOfLines={2} style={{ color: '#969698', marginVertical: 5 }}>
+                    <Text numberOfLines={line ? 2 : undefined}  style={{ color: '#969698', marginVertical: 5 }}>
                         The check-in process is a critical aspect of any hospitality experience, ensuring that both the
                         guests and the establishment are on the same page before the stay begins. Whether you’re a
                         traveler heading to a hotel, resort, or vacation rental, knowing the check-in policies
@@ -280,6 +282,7 @@ export default function DetailRoom({ navigation }) {
                         explore the key components of a typical check-in policy and why each one matters.
                     </Text>
                     <TouchableOpacity
+                    onPress={() => setLine(!line)}
                         style={{
                             flexDirection: 'row',
                             alignItems: 'center',
@@ -291,7 +294,7 @@ export default function DetailRoom({ navigation }) {
                             borderWidth: 1
                         }}
                     >
-                        <Text style={[styles.text, { fontSize: 20 }]}>View More</Text>
+                        <Text style={[styles.text, { fontSize: 20 }]}>{line?'View More':'Hide'}</Text>
                         <AntDesign name="right" size={20} color="black" style={{ color: '#969698' }} />
                     </TouchableOpacity>
                 </View>
