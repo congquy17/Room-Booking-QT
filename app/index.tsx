@@ -12,20 +12,22 @@ import Facilities from './views/Facilities';
 import Review from './views/Review';
 import Description from './views/Description';
 import ComfirmAndPay from './views/ComfirmAndPay';
+import Successfully from './views/Successfully';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
     return (
         <NavigationContainer independent={true}>
             <Stack.Navigator>
+                <Stack.Screen options={{ headerShown: false }} name="Main" component={Main} />
                 <Stack.Screen options={{ headerShown: false }} name="DetailRoom" component={DetailRoom} />
                  <Stack.Screen options={{ headerShown: false }} name="Review" component={Review} />
                  <Stack.Screen options={{ headerShown: false }} name="Facilities" component={Facilities} />
                  <Stack.Screen options={{ headerShown: false }} name="SignIn" component={SignIn} />
                  <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUp} /> 
-                <Stack.Screen options={{ headerShown: false }} name="Main" component={Main} />
                 <Stack.Screen options={{ headerShown: false }} name="Description" component={Description} />
                 <Stack.Screen options={{ headerShown: false }} name="ComfirmAndPay" component={ComfirmAndPay} />
+                <Stack.Screen options={{ headerShown: false }} name="Successfully" component={Successfully} />
                
                 
             </Stack.Navigator>

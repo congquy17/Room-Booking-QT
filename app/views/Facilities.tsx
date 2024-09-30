@@ -7,7 +7,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 export default function Facilities() {
     const navigation = useNavigation();
-    const router = useRouter();
 
     const Aline = ({ icon, title }) => {
         return (

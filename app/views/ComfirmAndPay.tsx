@@ -235,6 +235,7 @@ export default function ComfirmAndPay() {
                         width: '100%',
                         alignItems: 'center'
                     }}
+                    onPress={() => navigation.navigate('Successfully')} // Go back to the previous screen
                 >
                     <Text style={{ fontSize: 20, color: 'white' }}>Book now</Text>
                 </TouchableOpacity>
