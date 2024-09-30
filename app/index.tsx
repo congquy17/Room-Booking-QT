@@ -10,6 +10,8 @@ import Main from './views/Main';
 import DetailRoom from './views/DetailRoom';
 import Facilities from './views/Facilities';
 import Review from './views/Review';
+import Description from './views/Description';
+import ComfirmAndPay from './views/ComfirmAndPay';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -22,6 +24,8 @@ export default function App() {
                  <Stack.Screen options={{ headerShown: false }} name="SignIn" component={SignIn} />
                  <Stack.Screen options={{ headerShown: false }} name="SignUp" component={SignUp} /> 
                 <Stack.Screen options={{ headerShown: false }} name="Main" component={Main} />
+                <Stack.Screen options={{ headerShown: false }} name="Description" component={Description} />
+                <Stack.Screen options={{ headerShown: false }} name="ComfirmAndPay" component={ComfirmAndPay} />
                
                 
             </Stack.Navigator>

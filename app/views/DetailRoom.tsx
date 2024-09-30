@@ -42,7 +42,8 @@ export default function DetailRoom({ navigation }) {
         category: 'Beach',
         price: 150,
         rating: 4.7,
-        address: '218 Hai Bà Trưng, Phú Yên'
+        address: '218 Hai Bà Trưng, Phú Yên',
+        mainImage: 'https://picsum.photos/200/300',
     });
 
     // Lấy kích thước của màn hình
@@ -330,6 +331,7 @@ export default function DetailRoom({ navigation }) {
                             borderRadius: 10,
                             borderWidth: 1
                         }}
+                        onPress={() => navigation.navigate('Description')}
                     >
                         <Text style={[styles.text, { fontSize: 20 }]}>View More</Text>
                         <AntDesign name="right" size={20} color="black" style={{ color: '#969698' }} />
@@ -361,6 +363,7 @@ export default function DetailRoom({ navigation }) {
                             flexDirection: 'row',
                             justifyContent: 'center'
                         }}
+                        onPress={() => navigation.navigate('ComfirmAndPay')}
                     >
                         <Text style={{ color: 'white', fontWeight: 700, fontSize: 17 }}>Book now</Text>
                     </TouchableOpacity>
