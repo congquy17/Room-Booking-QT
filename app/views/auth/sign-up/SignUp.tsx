@@ -16,7 +16,7 @@ const PhoneInput = ({ value, onChange }: any) => (
         style={styles.phoneInputContainer}
     />
 );
-export default function SignUp() {
+export default function SignUp({navigation}) {
     const router = useRouter();
     const [value, setValue] = React.useState('');
     return (
@@ -57,7 +57,7 @@ export default function SignUp() {
                     title="Sign In"
                     textColor="#00bdd5"
                     textDecorationLine="underline"
-                    onPress={() => router.push('/auth/sign-in/SignIn')}
+                    onPress={() =>  navigation.navigate('SignIn')}
                 />
             </ScrollView>
         </View>
