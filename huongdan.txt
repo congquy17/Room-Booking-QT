@@ -1,0 +1,2 @@
+I Cài một số thư viện
+1 cài phone:  npm i react-native-phone-input --save
