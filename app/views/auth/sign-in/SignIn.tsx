@@ -27,7 +27,7 @@ const PhoneInput = ({ value, onChange }: any) => (
         style={styles.phoneInputContainer}
     />
 );
-export default function SignIn() {
+export default function SignIn({navigation}) {
     const router = useRouter();
     const [showPassword, setShowPassword] = React.useState(false);
     const [value, setValue] = React.useState('');
@@ -72,11 +72,11 @@ export default function SignIn() {
                 <Text style={styles.subtext}>By signing up, you agree to our Terms of Service and Privacy Policy</Text>
                 <View style={styles.linkBottom}>
                     <Text>Already have an account?</Text>
-                    <TouchableOpacity onPress={() => router.push('/(tabs)/Search')}>
+                    <TouchableOpacity onPress={() =>navigation.navigate('Main')}>
                         <Text style={styles.linkText}>Home</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => router.push('/auth/sign-up/SignUp')}>
+                    <TouchableOpacity onPress={() =>  navigation.navigate('SignUp')}>
                         <Text style={styles.linkText}>Signup</Text>
                     </TouchableOpacity>
                 </View>

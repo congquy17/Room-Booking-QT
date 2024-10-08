@@ -68,11 +68,9 @@ const NavMenu = ({ page, setPage }: any) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#ebfdff',
-        marginTop: 30,
         flex: 1
     },
     searchBarContainer: {
-        height: 80,
         padding: 20
     },
     navMenuContainer: {
