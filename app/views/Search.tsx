@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
         flex: 1
     },
     searchBarContainer: {
-        height: 80,
         padding: 20
     },
     navMenuContainer: {
