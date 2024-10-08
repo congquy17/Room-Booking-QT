@@ -5,7 +5,7 @@ import Item from '../components/search/beach/Item';
 import SearchBar from '../components/search/search-bar/SearchBar';
 import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
-
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 // Dữ liệu giả lập bên ngoài component
 // findall
 const roomData = [
@@ -60,10 +60,24 @@ export default function SearchRoom() {
     const [fromValue, setFromValue] = useState(0);
     const [toValue, setToValue] = useState(0);
     const [value, setValue] = useState(0);
+    const [priceRange, setPriceRange] = useState([10, 250]);
+    // chọn option
+    const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+    // Function to handle checkbox selection
+    const handleSelection = (option: string) => {
+        if (selectedOptions.includes(option)) {
+            // If option is already selected, deselect it by removing it from the array
+            setSelectedOptions(selectedOptions.filter((item) => item !== option));
+        } else {
+            // If option is not selected, add it to the array
+            setSelectedOptions([...selectedOptions, option]);
+        }
+    };
     const checkBoxTax = () => {
         setIsCheckBox(!isCheckBox);
     };
-    const toggleLike = (roomId) => {
+    const toggleLike = (roomId: any) => {
         setRooms(rooms.map((room) => (room.id === roomId ? { ...room, liked: !room.liked } : room)));
     };
 
@@ -155,32 +169,105 @@ export default function SearchRoom() {
                         </View>
                         <Text style={styles.sectionTitle}>Price range</Text>
                         <View style={styles.priceRange}>
-                            <Text>US$10</Text>
-                            <Text>—</Text>
-                            <Text>US$250</Text>
+                            <View style={{ width: '100%' }}>
+                                <MultiSlider
+                                    values={[priceRange[0], priceRange[1]]} // Giá trị hiện tại của thanh kéo
+                                    min={10} // Giá trị tối thiểu
+                                    max={250} // Giá trị tối đa
+                                    onValuesChange={(values) => setPriceRange(values)} // Cập nhật giá trị khi kéo thanh
+                                    selectedStyle={{
+                                        backgroundColor: '#0392af' // Màu của phần đã chọn
+                                    }}
+                                    unselectedStyle={{
+                                        backgroundColor: '#cccccc' // Màu của phần chưa chọn
+                                    }}
+                                    trackStyle={{
+                                        height: 10 // Độ dày của thanh kéo
+                                    }}
+                                    markerStyle={{
+                                        height: 20,
+                                        width: 20,
+                                        backgroundColor: '#0392af' // Màu nút kéo
+                                    }}
+                                    containerStyle={{ alignItems: 'center', padding: 0, margin: 0, width: '100%' }}
+                                />
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            borderWidth: 1,
+                                            borderRadius: 10,
+                                            borderBlockColor: 'grays',
+                                            padding: 10
+                                        }}
+                                    >
+                                        <Text>Minimun</Text>
+                                        <Text>US${priceRange[0]}</Text>
+                                    </View>
+                                    <Text>--</Text>
+                                    <View
+                                        style={{
+                                            borderWidth: 1,
+                                            borderRadius: 10,
+                                            borderBlockColor: 'grays',
+                                            padding: 10
+                                        }}
+                                    >
+                                        <Text>Maximun</Text>
+                                        <Text>US${priceRange[1]}</Text>
+                                    </View>
+                                </View>
+                            </View>
                         </View>
 
                         <Text style={styles.sectionTitle}>Type of place</Text>
                         <View style={styles.typeOfPlace}>
-                            <TouchableOpacity style={styles.checkBoxRow}>
-                                <Text style={{ fontSize: 18, fontWeight: 500 }}>Entire place</Text>
+                            <TouchableOpacity
+                                style={styles.checkBoxRow}
+                                onPress={() => handleSelection('Entire place')}
+                            >
+                                <Text style={{ fontSize: 16, fontWeight: '500' }}>Entire place</Text>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={{ fontSize: 12 }}>Entire apartment, condos, house</Text>
-                                    <AntDesign name="checksquare" size={24} color="#0392af" />
+                                    <AntDesign
+                                        name="checksquare"
+                                        size={24}
+                                        color={selectedOptions.includes('Entire place') ? '#0392af' : '#ccc'}
+                                    />
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.checkBoxRow}>
-                                <Text style={{ fontSize: 18, fontWeight: 500 }}>Private Room</Text>
+
+                            {/* Private Room */}
+                            <TouchableOpacity
+                                style={styles.checkBoxRow}
+                                onPress={() => handleSelection('Private Room')}
+                            >
+                                <Text style={{ fontSize: 16, fontWeight: '500' }}>Private Room</Text>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={{ fontSize: 12 }}>Entire apartment, condos, house</Text>
-                                    <AntDesign name="checksquare" size={24} color="#0392af" />
+                                    <AntDesign
+                                        name="checksquare"
+                                        size={24}
+                                        color={selectedOptions.includes('Private Room') ? '#0392af' : '#ccc'}
+                                    />
                                 </View>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.checkBoxRow}>
-                                <Text style={{ fontSize: 18, fontWeight: 500 }}>Dormitories</Text>
+
+                            {/* Dormitories */}
+                            <TouchableOpacity style={styles.checkBoxRow} onPress={() => handleSelection('Dormitories')}>
+                                <Text style={{ fontSize: 16, fontWeight: '500' }}>Dormitories</Text>
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text style={{ fontSize: 12 }}>Entire apartment, condos, house</Text>
-                                    <AntDesign name="checksquare" size={24} color="#0392af" />
+                                    <AntDesign
+                                        name="checksquare"
+                                        size={24}
+                                        color={selectedOptions.includes('Dormitories') ? '#0392af' : '#ccc'}
+                                    />
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -228,7 +315,7 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         width: '100%',
-        height: '70%',
+        height: '80%',
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20
@@ -244,7 +331,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     sectionTitle: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: '600',
         marginVertical: 10
     },
@@ -256,10 +343,12 @@ const styles = StyleSheet.create({
     typeOfPlace: {
         marginTop: 10
     },
-    checkBoxRow: {},
+    checkBoxRow: {
+        marginBottom: 10
+    },
     clearButton: {
         alignItems: 'center',
-        marginVertical: 10
+        padding: 10
     },
     resultsButton: {
         backgroundColor: '#0392af',
