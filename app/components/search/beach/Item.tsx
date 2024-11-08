@@ -2,62 +2,39 @@ import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react
 import React from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
-import { useRouter } from 'expo-router';
-export default function Item({ room }: any) {
-    const router = useRouter();
+
+export default function Item({ room, isFavorite }: any) {
     const navigation = useNavigation();
-    // 5
+
     return (
-        <View key={room.id} style={{ marginBottom: 20 }}>
-            <TouchableOpacity onPress={() => navigation.navigate("DetailRoom")}>
+        <View key={room.id} style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => navigation.navigate('DetailRoom')}>
                 <ImageBackground
-                    style={{
-                        borderRadius: 10,
-                        overflow: 'hidden',
-                        height: 400,
-                        width: '100%'
-                    }}
-                    source={{ uri: room.imageUrl }}
+                    style={styles.imageBackground}
+                    source={{ uri: room.listImage[0] }}
                 >
-                    <TouchableOpacity>
+                    <TouchableOpacity style={styles.heartContainer}>
                         <AntDesign
-                            name="hearto"
+                            name="heart"
                             size={24}
-                            color="red"
-                            style={{
-                                backgroundColor: 'white',
-                                position: 'absolute',
-                                padding: 10,
-                                top: 10,
-                                right: 10,
-                                borderRadius: 100
-                            }}
+                            style={[
+                                styles.heartIcon,
+                                isFavorite ? styles.heartFavorite : null,
+                            ]}
                         />
                     </TouchableOpacity>
                 </ImageBackground>
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        paddingTop: 10
-                    }}
-                >
+                <View style={styles.roomDetails}>
                     <View>
-                        <Text style={styles.h3}>{room.name}</Text>
-                        <Text style={{ marginTop: 5 }}>{room.category}</Text>
+                        <Text style={styles.roomName}>{room.name}</Text>
+                        <Text style={styles.roomCategory}>{room.category}</Text>
                     </View>
                     <View>
-                        <View
-                            style={{
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}
-                        >
+                        <View style={styles.ratingContainer}>
                             <AntDesign name="star" size={20} color="#eccd60" />
                             <Text>{room.rating}</Text>
                         </View>
-                        <View style={{ marginTop: 5 }}>
+                        <View style={styles.priceContainer}>
                             <Text>${room.price}/night</Text>
                         </View>
                     </View>
@@ -68,16 +45,47 @@ export default function Item({ room }: any) {
 }
 
 const styles = StyleSheet.create({
-    h2: {
-        fontSize: 24,
-        fontWeight: 'bold'
+    itemContainer: {
+        marginBottom: 20,
     },
-    h3: {
+    imageBackground: {
+        borderRadius: 10,
+        overflow: 'hidden',
+        height: 400,
+        width: '100%',
+    },
+    heartContainer: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        padding: 10,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        borderRadius: 100,
+    },
+    heartIcon: {
+        color: 'white', // Default color
+    },
+    heartFavorite: {
+        color: 'red', // Red color for favorites
+    },
+    roomDetails: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingTop: 10,
+    },
+    roomName: {
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
-    h4: {
-        fontSize: 16,
-        fontWeight: 'bold'
-    }
+    roomCategory: {
+        marginTop: 5,
+    },
+    ratingContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    priceContainer: {
+        marginTop: 5,
+    },
 });
