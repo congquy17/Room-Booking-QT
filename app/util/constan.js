@@ -1,0 +1,1 @@
+export default API_Mobile = 'http://192.168.50.20:5000/api/v1'

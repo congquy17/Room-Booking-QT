@@ -1,50 +1,55 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Import axios
 import Item from '../components/search/beach/Item';
+import API_Mobile from '../util/constan';
+import { useSelector } from 'react-redux';
 
 export default function Favorites() {
-    const roomData = [
-        {
-            id: 1,
-            name: 'Room with Ocean View',
-            category: 'Beach',
-            price: 120,
-            rating: 4.8,
-            imageUrl: 'https://th.bing.com/th/id/OIP.UfnkmLgG_dbPOEsZJ0G5VgAAAA?rs=1&pid=ImgDetMain'
-        },
-        {
-            id: 2,
-            name: 'Cozy Beach House',
-            category: 'Beach',
-            price: 100,
-            rating: 4.5,
-            imageUrl: 'https://th.bing.com/th/id/OIP.OnwkSJ55-36ycyNvYBrbeAAAAA?w=474&h=663&rs=1&pid=ImgDetMain'
-        },
-        {
-            id: 3,
-            name: 'Luxury Villa',
-            category: 'Beach',
-            price: 300,
-            rating: 5.0,
-            imageUrl: 'https://i.pinimg.com/originals/9e/fa/64/9efa64a6e484af14d04bacb6f8dc10e5.jpg'
-        },
-        {
-            id: 4,
-            name: 'Beachfront Bungalow',
-            category: 'Beach',
-            price: 150,
-            rating: 4.7,
-            imageUrl: 'https://th.bing.com/th/id/OIP.IwOfp5jFS1c9stsJjDrj0wAAAA?w=300&h=400&rs=1&pid=ImgDetMain'
-        },
-        {
-            id: 5,
-            name: 'Private Beach Cabin',
-            category: 'Beach',
-            price: 80,
-            rating: 4.3,
-            imageUrl: 'https://th.bing.com/th/id/OIP.uQA5YTyGfFiELv1CS2gA4gHaGj?w=1200&h=1061&rs=1&pid=ImgDetMain'
-        }
-    ];
+    interface FavoriteRoom {
+        _id: string;
+        roomId: string;
+    }
+
+    const [favoriteData, setFavoriteData] = useState<FavoriteRoom[]>([]); // State lưu dữ liệu yêu thích
+    const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải
+    const [error, setError] = useState(null); // State để theo dõi lỗi nếu có
+    const {user} = useSelector((state: any) => state.auth);
+
+    useEffect(() => {
+        // Hàm gọi API để lấy dữ liệu yêu thích
+        const fetchFavoriteData = async () => {
+            try {
+                const response = await axios.get(`${API_Mobile}/favories/${user._id}`); // Gọi API lấy dữ liệu yêu thích
+                console.log(response.data); // Kiểm tra dữ liệu trả về
+                setFavoriteData(response.data); // Lưu dữ liệu vào state
+            } catch (error) {
+                setError((error as any).message); // Lưu lỗi vào state nếu có lỗi xảy ra
+            } finally {
+                setLoading(false); // Đặt trạng thái loading thành false khi kết thúc
+            }
+        };
+
+        fetchFavoriteData(); // Gọi API khi component được render
+    }, []); // [] nghĩa là useEffect chỉ chạy khi component mount
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#00bdd5" />
+                <Text>Đang tải dữ liệu yêu thích...</Text>
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{error}</Text>
+            </View>
+        );
+    }
+
     return (
         <ScrollView style={{ backgroundColor: 'white', padding: 10 }}>
             <View
@@ -53,20 +58,22 @@ export default function Favorites() {
                     flexDirection: 'row',
                     justifyContent: 'center',
                     paddingTop: 10,
-                    backgroundColor: 'white'
+                    backgroundColor: 'white',
                 }}
             >
                 <View style={{ backgroundColor: 'white', justifyContent: 'center', flexDirection: 'row' }}>
-                    <Text style={{ fontSize: 16, fontWeight: 700 }}>Favorites</Text>
+                    <Text style={{ fontSize: 16, fontWeight: '700' }}>Favorites</Text>
                 </View>
             </View>
-            <View style={{ backgroundColor: 'white', justifyContent: 'flex-start', flexDirection: 'row',marginBottom:20 }}>
-                <Text style={{ fontSize: 20, fontWeight: 700 }}>Placed you liked</Text>
+            <View style={{ backgroundColor: 'white', justifyContent: 'flex-start', flexDirection: 'row', marginBottom: 20 }}>
+                <Text style={{ fontSize: 20, fontWeight: '700' }}>Placed you liked</Text>
             </View>
 
-            {roomData.map((room) => (
-                <Item room={room} key={room.id} />
-            ))}
+            {favoriteData.length > 0 ? (
+                favoriteData.map((room) => <Item room={room.roomId} key={room._id} isFavorite={true} />)
+            ) : (
+                <Text style={{ textAlign: 'center', fontSize: 18 }}>Không có dữ liệu yêu thích.</Text>
+            )}
         </ScrollView>
     );
 }
@@ -74,7 +81,23 @@ export default function Favorites() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center'
-        // justifyContent: 'center',
-    }
+        alignItems: 'center',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8d7da',
+        padding: 20,
+    },
+    errorText: {
+        color: '#721c24',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });
