@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import Item from "../beach/Item"; // Component Item dùng để hiển thị mỗi phòng
 import API_Mobile from "../../../util/constan"; // Đảm bảo rằng API_Mobile chứa URL đúng cho API
+import { useSelector } from "react-redux";
 
 export default function Camping() {
   interface Room {
@@ -12,12 +13,12 @@ export default function Camping() {
   const [rooms, setRooms] = useState<Room[]>([]); // State để lưu dữ liệu phòng
   const [loading, setLoading] = useState(true); // State để theo dõi quá trình tải dữ liệu
   const [error, setError] = useState(null); // State để lưu thông tin lỗi nếu có
-
+  const { user } = useSelector((state: any) => state.auth);
   useEffect(() => {
     // Hàm gọi API để lấy dữ liệu phòng
     const fetchRooms = async () => {
       try {
-        const response = await fetch(`${API_Mobile}/rooms/type/Camping`);
+        const response = await fetch(`${API_Mobile}/rooms/type/Camping/${user._id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -66,6 +67,7 @@ export default function Camping() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: 15,
     padding: 10, // Thêm padding để không gian đẹp hơn
   },
   loadingContainer: {

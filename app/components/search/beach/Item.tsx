@@ -1,28 +1,54 @@
 import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
-
-export default function Item({ room, isFavorite }: any) {
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import API_Mobile from '../../../util/constan';
+import { addFavorite, removeFavorite } from '@/app/store/slices/authSlice';
+export default function Item({ room,isFavorite }: any) {
     const navigation = useNavigation();
+    const { user } = useSelector((state: any) => state.auth);
+    const [favorite, setFavorite] = useState(room.isFavorite || isFavorite||false); // State to track favorite status
+    const dispatch = useDispatch();
+    // Function to handle the like/unlike action
+
+
+    const handleLikePress = async () => {
+        try {
+            if (favorite) {
+                await axios.put(`${API_Mobile}/users/remove-favorite/${user._id}/${room._id}`);
+                dispatch(removeFavorite(room._id)); // Update Redux state
+            } else {
+                await axios.put(`${API_Mobile}/users/add-favorite/${user._id}/${room._id}`);
+                 dispatch(addFavorite(room._id)); // Update Redux state
+            }
+            setFavorite(!favorite);
+        } catch (error) {
+            console.error('Failed to update favorite status', error);
+        }
+    };
 
     return (
         <View key={room.id} style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('DetailRoom')}>
+            <TouchableOpacity onPress={() => navigation.navigate('DetailRoom', { roomId: room._id })}
+            >
                 <ImageBackground
                     style={styles.imageBackground}
-                    source={{ uri: room.listImage[0] }}
+                    source={{ uri: room?.listImage[0] }}
                 >
-                    <TouchableOpacity style={styles.heartContainer}>
+                  
+                 
+                    {!isFavorite ? <TouchableOpacity style={styles.heartContainer} onPress={handleLikePress}>
                         <AntDesign
                             name="heart"
                             size={24}
                             style={[
                                 styles.heartIcon,
-                                isFavorite ? styles.heartFavorite : null,
+                                favorite ? styles.heartFavorite : null,
                             ]}
                         />
-                    </TouchableOpacity>
+                    </TouchableOpacity> : null}
                 </ImageBackground>
                 <View style={styles.roomDetails}>
                     <View>

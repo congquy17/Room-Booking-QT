@@ -8,6 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import Item from "./Item"; // Giả sử đây là component hiển thị mỗi phòng
 import API_Mobile from '../../../util/constan';
+import { useSelector } from "react-redux";
 export default function Beach() {
   interface Room {
     _id: string;
@@ -16,12 +17,12 @@ export default function Beach() {
   const [rooms, setRooms] = useState<Room[]>([]); // State để lưu dữ liệu phòng
   const [loading, setLoading] = useState(true); // State để theo dõi quá trình tải dữ liệu
   const [error, setError] = useState(null); // State để lưu thông tin lỗi nếu có
-
+  const {user} = useSelector((state: any) => state.auth);
   useEffect(() => {
     // Hàm gọi API để lấy dữ liệu phòng
     const fetchRooms = async () => {
       try {
-        const response = await fetch(`${API_Mobile}/rooms/type/Beach`);
+        const response = await fetch(`${API_Mobile}/rooms/type/Beach/${user._id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+    marginBottom: 15,
   },
   loadingContainer: {
     flex: 1,

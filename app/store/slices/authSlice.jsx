@@ -5,7 +5,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null, //include user and organization
+    user: null, // User includes user and organization information
     loading: false,
     error: null,
   },
@@ -20,12 +20,29 @@ const authSlice = createSlice({
     updateUser: (state, action) => {
       state.user = action.payload;
     },
+    addFavorite: (state, action) => {
+      // Adds a favorite to the user's favorites array
+      if (state.user && !state.user.favorites.includes(action.payload)) {
+        state.user.favorites.push(action.payload);
+      }
+    },
+    removeFavorite: (state, action) => {
+      // Removes a favorite from the user's favorites array
+      if (state.user) {
+        state.user.favorites = state.user.favorites.filter(
+          (favorite) => favorite !== action.payload
+        );
+      }
+    },
   },
 });
 
 export const {
+  login,
   logoutUser,
   updateUser,
-  login
+  addFavorite,
+  removeFavorite,
 } = authSlice.actions;
+
 export default authSlice.reducer;

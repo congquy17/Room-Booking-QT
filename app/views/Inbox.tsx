@@ -1,18 +1,21 @@
 import { FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 
-export default function Inbox({ navigation }) {
-  // Dữ liệu tin nhắn giả lập
+import { NavigationProp } from '@react-navigation/native';
+
+export default function Inbox({ navigation }: { navigation: NavigationProp<any> }) {
   const [messages, setMessages] = useState([
-    { id: 1, sender: 'John Doe', message: 'Hello! How are you?', time: '10:30 AM' },
-    { id: 2, sender: 'Jane Smith', message: 'Meeting at 3 PM?', time: '9:00 AM' },
-    { id: 3, sender: 'Bob Johnson', message: 'Let’s catch up soon!', time: 'Yesterday' },
-    // Thêm các tin nhắn khác
+    { id: 1, sender: 'AI Assistant', role: 'ai', message: 'Hello! How can I assist you today?', time: '10:30 AM' },
+    { id: 2, sender: 'Admin', role: 'admin', message: 'I have a question about your product.', time: '9:00 AM' },
   ]);
 
   // Hàm điều hướng đến chi tiết cuộc trò chuyện
-  const openChat = (message) => {
-    navigation.navigate('ChatDetail', { message });
+  const openChat = (message: { id: number; sender: string; role: string; message: string; time: string; }) => {
+    if(message.role === 'ai') {
+      navigation.navigate('ChatDetail', { message });
+    }else {
+      navigation.navigate('UserchatForAdmin', { message });
+    }
   };
 
   return (
@@ -25,7 +28,9 @@ export default function Inbox({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.messageItem} onPress={() => openChat(item)}>
             <View style={styles.messageDetails}>
-              <Text style={styles.sender}>{item.sender}</Text>
+              <Text style={[styles.sender, item.role === 'admin' ? styles.adminSender : styles.aiSender]}>
+                {item.sender}
+              </Text>
               <Text style={styles.messageText}>{item.message}</Text>
             </View>
             <Text style={styles.time}>{item.time}</Text>
@@ -63,6 +68,12 @@ const styles = StyleSheet.create({
   sender: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  adminSender: {
+    color: '#007bff', // Màu cho Admin
+  },
+  aiSender: {
+    color: '#28a745', // Màu cho AI
   },
   messageText: {
     fontSize: 16,

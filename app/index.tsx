@@ -15,6 +15,8 @@ import ChatDetail from './views/ChatDetail';
 import { Provider } from 'react-redux'; // Import the correct Provider
 import store from './store/store'; // Path to your Redux store
 import Toast from 'react-native-toast-message';
+
+import UserchatForAdmin from './views/UserchatForAdmin';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -24,7 +26,7 @@ export default function App() {
                 <Stack.Navigator>
                     <Stack.Screen options={{ headerShown: false }} name="SignIn" component={SignIn} />
                     <Stack.Screen options={{ headerShown: false }} name="Main" component={Main} />
-                    <Stack.Screen options={{ headerShown: false }} name="ChatDetail" component={ChatDetail} />
+                    <Stack.Screen options={{ headerTitle: 'Chat with Ai' }} name="ChatDetail" component={ChatDetail} />
                     <Stack.Screen options={{ headerShown: false }} name="DetailRoom" component={DetailRoom} />
                     <Stack.Screen options={{ headerShown: false }} name="Review" component={Review} />
                     <Stack.Screen options={{ headerShown: false }} name="Facilities" component={Facilities} />
@@ -32,6 +34,7 @@ export default function App() {
                     <Stack.Screen options={{ headerShown: false }} name="Description" component={Description} />
                     <Stack.Screen options={{ headerShown: false }} name="ComfirmAndPay" component={ComfirmAndPay} />
                     <Stack.Screen options={{ headerShown: false }} name="Successfully" component={Successfully} />
+                    <Stack.Screen  name="UserchatForAdmin" options={{ headerTitle: 'Chat with Admin' }} component={UserchatForAdmin} />
                 </Stack.Navigator>
             </NavigationContainer>
             <Toast />
