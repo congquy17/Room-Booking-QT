@@ -6,13 +6,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import API_Mobile from '../../../util/constan';
 import { addFavorite, removeFavorite } from '@/app/store/slices/authSlice';
-export default function Item({ room,isFavorite }: any) {
+export default function Item({ room, isFavorite }: any) {
     const navigation = useNavigation();
     const { user } = useSelector((state: any) => state.auth);
-    const [favorite, setFavorite] = useState(room.isFavorite || isFavorite||false); // State to track favorite status
+    const [favorite, setFavorite] = useState(room.isFavorite || isFavorite || false); // State to track favorite status
     const dispatch = useDispatch();
     // Function to handle the like/unlike action
-
 
     const handleLikePress = async () => {
         try {
@@ -21,7 +20,7 @@ export default function Item({ room,isFavorite }: any) {
                 dispatch(removeFavorite(room._id)); // Update Redux state
             } else {
                 await axios.put(`${API_Mobile}/users/add-favorite/${user._id}/${room._id}`);
-                 dispatch(addFavorite(room._id)); // Update Redux state
+                dispatch(addFavorite(room._id)); // Update Redux state
             }
             setFavorite(!favorite);
         } catch (error) {
@@ -31,24 +30,17 @@ export default function Item({ room,isFavorite }: any) {
 
     return (
         <View key={room.id} style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => navigation.navigate('DetailRoom', { roomId: room._id })}
-            >
-                <ImageBackground
-                    style={styles.imageBackground}
-                    source={{ uri: room?.listImage[0] }}
-                >
-                  
-                 
-                    {!isFavorite ? <TouchableOpacity style={styles.heartContainer} onPress={handleLikePress}>
-                        <AntDesign
-                            name="heart"
-                            size={24}
-                            style={[
-                                styles.heartIcon,
-                                favorite ? styles.heartFavorite : null,
-                            ]}
-                        />
-                    </TouchableOpacity> : null}
+            <TouchableOpacity onPress={() => navigation.navigate('DetailRoom', { roomId: room._id })}>
+                <ImageBackground style={styles.imageBackground} source={{ uri: room?.listImage[0] }}>
+                    {!isFavorite ? (
+                        <TouchableOpacity style={styles.heartContainer} onPress={handleLikePress}>
+                            <AntDesign
+                                name="heart"
+                                size={24}
+                                style={[styles.heartIcon, favorite ? styles.heartFavorite : null]}
+                            />
+                        </TouchableOpacity>
+                    ) : null}
                 </ImageBackground>
                 <View style={styles.roomDetails}>
                     <View>
@@ -72,13 +64,13 @@ export default function Item({ room,isFavorite }: any) {
 
 const styles = StyleSheet.create({
     itemContainer: {
-        marginBottom: 20,
+        marginBottom: 20
     },
     imageBackground: {
         borderRadius: 10,
         overflow: 'hidden',
         height: 400,
-        width: '100%',
+        width: '100%'
     },
     heartContainer: {
         position: 'absolute',
@@ -86,32 +78,32 @@ const styles = StyleSheet.create({
         right: 10,
         padding: 10,
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        borderRadius: 100,
+        borderRadius: 100
     },
     heartIcon: {
-        color: 'white', // Default color
+        color: 'white' // Default color
     },
     heartFavorite: {
-        color: 'red', // Red color for favorites
+        color: 'red' // Red color for favorites
     },
     roomDetails: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: 10,
+        paddingTop: 10
     },
     roomName: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     roomCategory: {
-        marginTop: 5,
+        marginTop: 5
     },
     ratingContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     priceContainer: {
-        marginTop: 5,
-    },
+        marginTop: 5
+    }
 });
