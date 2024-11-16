@@ -1,5 +1,5 @@
 import { Image, ImageBackground, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import SearchBar from '../components/search/search-bar/SearchBar';
 import { useRouter } from 'expo-router';
@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { Octicons } from '@expo/vector-icons';
 import { TextInput } from 'react-native-paper';
+import AppContext from '../store/context/AppContext';
+import API_Mobile from '../util/constan';
 // Dữ liệu giả lập bên ngoài component
 // findall
 const roomData = [
@@ -16,56 +18,21 @@ const roomData = [
         category: 'Beach',
         price: 120,
         rating: 4.8,
+        type: 'Entire place',
         imageUrl: 'https://th.bing.com/th/id/OIP.UfnkmLgG_dbPOEsZJ0G5VgAAAA?rs=1&pid=ImgDetMain'
-    },
-    {
-        id: 2,
-        name: 'Cozy Beach House',
-        category: 'Beach',
-        price: 100,
-        rating: 4.5,
-        imageUrl: 'https://th.bing.com/th/id/OIP.OnwkSJ55-36ycyNvYBrbeAAAAA?w=474&h=663&rs=1&pid=ImgDetMain'
-    },
-    {
-        id: 3,
-        name: 'Luxury Villa',
-        category: 'Beach',
-        price: 300,
-        rating: 5.0,
-        imageUrl: 'https://i.pinimg.com/originals/9e/fa/64/9efa64a6e484af14d04bacb6f8dc10e5.jpg'
-    },
-    {
-        id: 4,
-        name: 'Beachfront Bungalow',
-        category: 'Beach',
-        price: 150,
-        rating: 4.7,
-        imageUrl: 'https://th.bing.com/th/id/OIP.IwOfp5jFS1c9stsJjDrj0wAAAA?w=300&h=400&rs=1&pid=ImgDetMain'
-    },
-    {
-        id: 5,
-        name: 'Private Beach Cabin',
-        category: 'Beach',
-        price: 80,
-        rating: 4.3,
-        imageUrl: 'https://th.bing.com/th/id/OIP.uQA5YTyGfFiELv1CS2gA4gHaGj?w=1200&h=1061&rs=1&pid=ImgDetMain'
     }
 ];
 export default function SearchRoom() {
-    // const { guestCount, setGuestCount, location, setLocation, selectedStartDate, setSelectedStartDate } =
-    //     useContext(AppContext);
     const [rooms, setRooms] = React.useState(roomData);
-    const [clicked, setClicked] = React.useState(false);
     const router = useRouter();
     const navigation = useNavigation();
     const [isCheckBox, setIsCheckBox] = React.useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [fromValue, setFromValue] = useState(0);
-    const [toValue, setToValue] = useState(0);
-    const [value, setValue] = useState(0);
     const [priceRange, setPriceRange] = useState([10, 250]);
     // chọn option
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+    const { localtion, setLocaltion, quantityCustomer, setQuantityCustomer, dateStart, setDateStart } =
+        useContext(AppContext);
 
     // Function to handle checkbox selection
     const handleSelection = (option: string) => {
@@ -77,13 +44,38 @@ export default function SearchRoom() {
             setSelectedOptions([...selectedOptions, option]);
         }
     };
+
     const checkBoxTax = () => {
         setIsCheckBox(!isCheckBox);
     };
-    const toggleLike = (roomId: any) => {
-        setRooms(rooms.map((room) => (room.id === roomId ? { ...room, liked: !room.liked } : room)));
-    };
+    useEffect(() => {
+        const fetchRooms = async () => {
+            try {
+                const response = await fetch(
+                    `${API_Mobile}/rooms/search/area-price-range?typeArea=${localtion}&prePrice=${priceRange[0]}&postPrice=${priceRange[1]}`
+                );
+                const result = await response.json();
 
+                console.log('API response:', result); // Log the entire response
+
+                // Now access the 'data' key directly
+                if (Array.isArray(result.data)) {
+                    setRooms(result.data); // Set the rooms directly to the 'data' array
+                } else {
+                    console.error('Expected data array, but got:', result.data);
+                    setRooms([]); // Fallback if the data structure is not as expected
+                }
+            } catch (error) {
+                console.error('Error fetching room data:', error);
+                setRooms([]); // Fallback to empty array if there's an error
+            }
+        };
+        fetchRooms();
+    }, [localtion, priceRange]);
+    // Toggle like status for a specific room
+    const toggleLike = (roomId: number) => {
+        setRooms((prevRooms) => prevRooms.map((room) => (room.id === roomId ? { ...room, liked: !room.liked } : room)));
+    };
     return (
         <View style={styles.container}>
             <ScrollView>
@@ -103,7 +95,9 @@ export default function SearchRoom() {
                     </TouchableOpacity>
                     <TextInput
                         style={{ marginLeft: 10, width: '80%', backgroundColor: 'white' }}
-                        placeholder="Where do you want to stay?"
+                        placeholder={
+                            localtion ? `${localtion}+${quantityCustomer}+${dateStart}` : 'Where do you want to stay?'
+                        }
                     />
                 </View>
                 <View
@@ -118,14 +112,23 @@ export default function SearchRoom() {
                     <Text style={{ fontSize: 20, fontWeight: 600 }}>Present total price</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text>All-inclusive, pre-tax</Text>
-                        <TouchableOpacity onPress={checkBoxTax}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setModalVisible(true), checkBoxTax;
+                            }}
+                        >
                             <AntDesign name="checksquare" size={24} color={isCheckBox ? '#0392af' : 'black'} />
                         </TouchableOpacity>
                     </View>
                 </View>
+
                 {rooms.map((room) => (
                     <View key={room.id} style={{ marginVertical: 20 }}>
-                        <TouchableOpacity onPress={() => setModalVisible(true)}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setModalVisible(false), navigation.navigate('DetailRoom', { roomId: room.id });
+                            }}
+                        >
                             <ImageBackground
                                 style={{
                                     borderRadius: 10,
@@ -133,7 +136,9 @@ export default function SearchRoom() {
                                     height: 400,
                                     width: '100%'
                                 }}
-                                source={{ uri: room.imageUrl }}
+                                source={{
+                                    uri: room.listImage[0]
+                                }}
                             >
                                 <TouchableOpacity onPress={() => toggleLike(room.id)}>
                                     <AntDesign
@@ -160,7 +165,7 @@ export default function SearchRoom() {
                             >
                                 <View>
                                     <Text style={styles.h3}>{room.name}</Text>
-                                    <Text style={{ marginTop: 5 }}>{room.category}</Text>
+                                    <Text style={{ marginTop: 5 }}>{room.typeArea}</Text>
                                 </View>
                                 <View>
                                     <View
@@ -314,7 +319,7 @@ export default function SearchRoom() {
                             <TouchableOpacity
                                 style={styles.resultsButton}
                                 onPress={() => {
-                                    setModalVisible(false), navigation.navigate('DetailRoom');
+                                    setModalVisible(false);
                                 }}
                             >
                                 <Text style={{ color: 'white' }}>View Results</Text>

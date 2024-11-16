@@ -10,13 +10,13 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { AntDesign, EvilIcons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { formatDate } from 'date-fns';
 import Button from '@/components/Button';
 import { useNavigation } from '@react-navigation/native';
-
+import AppContext from '@/app/store/context/AppContext';
 // Sample data
 const sampleData = [
     {
@@ -29,7 +29,7 @@ const sampleData = [
     },
     {
         image: 'https://hoanghamobile.com/tin-tuc/wp-content/uploads/2023/07/anh-dep-thien-nhien-2-1.jpg',
-        description: 'Asiaa'
+        description: 'Asia'
     }
 ];
 
@@ -54,13 +54,15 @@ const InputField = ({ label, placeholder, onPress }: any) => (
 export default function SeachBarModal({ modalVisible, setModalVisible }: any) {
     const [searchRooms, setSearchRooms] = useState(sampleData);
     const [openDate, setOpenDate] = useState(false);
-    const [localtion, setLocaltion] = useState('');
+
     const [toggleLocaltion, setToggleLocaltion] = useState(false);
     const [showGuests, setShowGuests] = useState(false); // Trạng thái để kiểm soát hiển thị
     const [adults, setAdults] = useState(0); // Số lượng người lớn
     const [children, setChildren] = useState(0); // Số lượng trẻ em
     const [placeholder, setPlaceholder] = useState('Add Guests'); // Placeholder ban đầu
     const navigation = useNavigation();
+    const { localtion, setLocaltion, quantityCustomer, setQuantityCustomer, dateStart, setDateStart } =
+        useContext(AppContext);
 
     const toggleGuests = () => {
         setShowGuests((prev) => !prev); // Chuyển đổi trạng thái hiển thị
@@ -94,6 +96,7 @@ export default function SeachBarModal({ modalVisible, setModalVisible }: any) {
     const handleChoose = () => {
         // Cập nhật placeholder với số lượng khách
         setPlaceholder(`${adults} Guests, ${children} Children`);
+        setQuantityCustomer(`${adults} Guests, ${children} Children`); // Cập nhật số lượng khách
         setShowGuests(false); // Đóng modal khi đã chọn
     };
     //  Time
@@ -104,6 +107,7 @@ export default function SeachBarModal({ modalVisible, setModalVisible }: any) {
 
     const handleConfirm = (date) => {
         setSelectedStartDated(formatDate(date, 'dd/MM/yyyy'));
+        setDateStart(formatDate(date, 'dd/MM/yyyy'));
         hideDatePicker();
     };
     return (

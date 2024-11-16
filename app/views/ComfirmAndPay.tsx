@@ -1,20 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
-
 import { RadioButton } from 'react-native-paper';
-export default function ComfirmAndPay() {
+export default function ComfirmAndPay({route}) {
+    const { information } = route.params;
     const navigation = useNavigation();
-    const [infor, setInfor] = React.useState({
-        id: 4,
-        name: 'Beachfront Bungalow',
-        category: 'Beach',
-        price: 150,
-        rating: 4.7,
-        address: '218 Hai Bà Trưng, Phú Yên',
-        mainImage: 'https://picsum.photos/200/300'
-    });
+    const [infor, setInfor] = React.useState(information);
+
+   
+
     const [selectedOption, setSelectedOption] = useState('full');
     return (
         <ScrollView style={{ backgroundColor: 'white', padding: 10 }}>
@@ -51,11 +46,11 @@ export default function ComfirmAndPay() {
             >
                 <View style={{ flexDirection: 'column', justifyContent: 'space-around' }}>
                     <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ fontWeight: '700', fontSize: 20 }}>{infor.price}$</Text>
+                        <Text style={{ fontWeight: '700', fontSize: 20 }}>{infor?.price}$</Text>
                         <Text style={{ fontSize: 20 }}>/night</Text>
                     </View>
                     <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ fontSize: 15 }}>{infor.name}</Text>
+                        <Text style={{ fontSize: 15 }}>{infor?.name}</Text>
                     </View>
                     <View
                         style={{
@@ -64,11 +59,11 @@ export default function ComfirmAndPay() {
                         }}
                     >
                         <AntDesign name="star" size={15} style={{ color: '#FFD700' }} />
-                        <Text style={{ marginLeft: 5 }}>{infor.rating}</Text>
+                        <Text style={{ marginLeft: 5 }}>{infor.rating||5}</Text>
                     </View>
                 </View>
                 <View>
-                    <Image source={{ uri: infor.mainImage }} style={{ width: 130, height: 130, borderRadius: 10 }} />
+                    <Image source={{ uri: infor?.listImage?.[0] }} style={{ width: 130, height: 130, borderRadius: 10 }} />
                 </View>
             </View>
             <View
@@ -135,6 +130,7 @@ export default function ComfirmAndPay() {
                         <RadioButton
                             value="partial"
                             status={selectedOption === 'partial' ? 'checked' : 'unchecked'}
+                            disabled={true}
                             onPress={() => setSelectedOption('partial')}
                         />
                     </View>
