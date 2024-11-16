@@ -1,5 +1,5 @@
 import { Image, ImageBackground, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import SearchBar from '../components/search/search-bar/SearchBar';
 import { useRouter } from 'expo-router';
@@ -23,12 +23,14 @@ const roomData = [
     }
 ];
 export default function SearchRoom() {
-    const [rooms, setRooms] = React.useState(roomData);
+    const [rooms, setRooms] = React.useState([]);
     const router = useRouter();
     const navigation = useNavigation();
     const [isCheckBox, setIsCheckBox] = React.useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [priceRange, setPriceRange] = useState([10, 250]);
+    const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+    const [debouncedLocation, setDebouncedLocation] = useState('');
     // chọn option
     const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
     const { localtion, setLocaltion, quantityCustomer, setQuantityCustomer, dateStart, setDateStart } =
@@ -48,34 +50,64 @@ export default function SearchRoom() {
     const checkBoxTax = () => {
         setIsCheckBox(!isCheckBox);
     };
-    useEffect(() => {
-        const fetchRooms = async () => {
-            try {
-                const response = await fetch(
-                    `${API_Mobile}/rooms/search/area-price-range?typeArea=${localtion}&prePrice=${priceRange[0]}&postPrice=${priceRange[1]}`
-                );
-                const result = await response.json();
+    const fetchRooms = async () => {
+        try {
+            const url = `${API_Mobile}/rooms/search/area-price-range?typeArea=${localtion}&prePrice=${priceRange[0]}&postPrice=${priceRange[1]}`;
+            console.log('Fetching URL:', url); // Log URL
 
-                console.log('API response:', result); // Log the entire response
+            const response = await fetch(url);
 
-                // Now access the 'data' key directly
-                if (Array.isArray(result.data)) {
-                    setRooms(result.data); // Set the rooms directly to the 'data' array
+            if (!response.ok) {
+                if (response.status === 404) {
+                    console.log('API endpoint not found. Please verify the URL.');
                 } else {
-                    console.error('Expected data array, but got:', result.data);
-                    setRooms([]); // Fallback if the data structure is not as expected
+                    console.error(`HTTP Error: ${response.status} - ${response.statusText}`);
                 }
-            } catch (error) {
-                console.error('Error fetching room data:', error);
-                setRooms([]); // Fallback to empty array if there's an error
+                setRooms([]); // Đảm bảo không crash app
+                return;
             }
-        };
+
+            const result = await response.json();
+            console.log('API response:', result);
+
+            if (Array.isArray(result.data)) {
+                setRooms(result.data);
+            } else {
+                console.error('Expected data array, but got:', result.data);
+                setRooms([]);
+            }
+        } catch (error) {
+            console.error('Error fetching room data:', error);
+            setRooms([]); // Fallback khi có lỗi
+        }
+    };
+    // Gọi hàm fetchRooms khi dependencies thay đổi
+    useEffect(() => {
         fetchRooms();
     }, [localtion, priceRange]);
     // Toggle like status for a specific room
     const toggleLike = (roomId: number) => {
         setRooms((prevRooms) => prevRooms.map((room) => (room.id === roomId ? { ...room, liked: !room.liked } : room)));
     };
+
+    const handleSliderChange = (values: number[]) => {
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+
+        debounceTimer.current = setTimeout(() => {
+            setPriceRange(values);
+        }, 400); // Đợi 0.4 giây sau khi người dùng dừng kéo
+    };
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedLocation(localtion); // Cập nhật giá trị sau 0.3 giây
+        }, 600);
+
+        return () => {
+            clearTimeout(handler); // Xoá timeout nếu người dùng tiếp tục nhập
+        };
+    }, [localtion]);
     return (
         <View style={styles.container}>
             <ScrollView>
@@ -96,8 +128,11 @@ export default function SearchRoom() {
                     <TextInput
                         style={{ marginLeft: 10, width: '80%', backgroundColor: 'white' }}
                         placeholder={
-                            localtion ? `${localtion}+${quantityCustomer}+${dateStart}` : 'Where do you want to stay?'
+                            debouncedLocation
+                                ? `${debouncedLocation}+${quantityCustomer}+${dateStart}`
+                                : 'Where do you want to stay?'
                         }
+                        onChangeText={(text) => setLocaltion(text)}
                     />
                 </View>
                 <View
@@ -122,70 +157,77 @@ export default function SearchRoom() {
                     </View>
                 </View>
 
-                {rooms.map((room) => (
-                    <View key={room.id} style={{ marginVertical: 20 }}>
-                        <TouchableOpacity
-                            onPress={() => {
-                                setModalVisible(false), navigation.navigate('DetailRoom', { roomId: room.id });
-                            }}
-                        >
-                            <ImageBackground
-                                style={{
-                                    borderRadius: 10,
-                                    overflow: 'hidden',
-                                    height: 400,
-                                    width: '100%'
-                                }}
-                                source={{
-                                    uri: room.listImage[0]
+                {rooms && rooms.length ? (
+                    rooms.map((room) => (
+                        <View key={room._id} style={{ marginVertical: 20 }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setModalVisible(false), navigation.navigate('DetailRoom', { roomId: room.id });
                                 }}
                             >
-                                <TouchableOpacity onPress={() => toggleLike(room.id)}>
-                                    <AntDesign
-                                        name={room.liked ? 'heart' : 'hearto'}
-                                        size={24}
-                                        color={room.liked ? 'white' : 'black'}
-                                        style={{
-                                            backgroundColor: room.liked ? 'red' : 'white',
-                                            position: 'absolute',
-                                            padding: 10,
-                                            top: 10,
-                                            right: 10,
-                                            borderRadius: 100
-                                        }}
-                                    />
-                                </TouchableOpacity>
-                            </ImageBackground>
-                            <View
-                                style={{
-                                    flexDirection: 'row',
-                                    justifyContent: 'space-between',
-                                    paddingTop: 10
-                                }}
-                            >
-                                <View>
-                                    <Text style={styles.h3}>{room.name}</Text>
-                                    <Text style={{ marginTop: 5 }}>{room.typeArea}</Text>
-                                </View>
-                                <View>
-                                    <View
-                                        style={{
-                                            flexDirection: 'row',
-                                            justifyContent: 'center',
-                                            alignItems: 'center'
-                                        }}
-                                    >
-                                        <AntDesign name="star" size={20} color="#eccd60" />
-                                        <Text>{room.rating}</Text>
+                                <ImageBackground
+                                    style={{
+                                        borderRadius: 10,
+                                        overflow: 'hidden',
+                                        height: 400,
+                                        width: '100%'
+                                    }}
+                                    source={{
+                                        uri:
+                                            room.listImage && room.listImage[0]
+                                                ? room.listImage[0]
+                                                : 'https://th.bing.com/th/id/OIP.UfnkmLgG_dbPOEsZJ0G5VgAAAA?rs=1&pid=ImgDetMain'
+                                    }} // Kiểm tra nếu có hình ảnh
+                                >
+                                    <TouchableOpacity onPress={() => toggleLike(room.id)}>
+                                        <AntDesign
+                                            name={room.liked ? 'heart' : 'hearto'}
+                                            size={24}
+                                            color={room.liked ? 'white' : 'black'}
+                                            style={{
+                                                backgroundColor: room.liked ? 'red' : 'white',
+                                                position: 'absolute',
+                                                padding: 10,
+                                                top: 10,
+                                                right: 10,
+                                                borderRadius: 100
+                                            }}
+                                        />
+                                    </TouchableOpacity>
+                                </ImageBackground>
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-between',
+                                        paddingTop: 10
+                                    }}
+                                >
+                                    <View>
+                                        <Text style={styles.h3}>{room.name}</Text>
+                                        <Text style={{ marginTop: 5 }}>{room.typeArea}</Text>
                                     </View>
-                                    <View style={{ marginTop: 5 }}>
-                                        <Text>${room.price}/night</Text>
+                                    <View>
+                                        <View
+                                            style={{
+                                                flexDirection: 'row',
+                                                justifyContent: 'center',
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <AntDesign name="star" size={20} color="#eccd60" />
+                                            <Text>{room.rating}</Text>
+                                        </View>
+                                        <View style={{ marginTop: 5 }}>
+                                            <Text>${room.price}/night</Text>
+                                        </View>
                                     </View>
                                 </View>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                ))}
+                            </TouchableOpacity>
+                        </View>
+                    ))
+                ) : (
+                    <Text>Không có dữ liệu</Text>
+                )}
             </ScrollView>
             {/* Modal */}
             <Modal transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
@@ -206,7 +248,7 @@ export default function SearchRoom() {
                                     values={[priceRange[0], priceRange[1]]} // Giá trị hiện tại của thanh kéo
                                     min={10} // Giá trị tối thiểu
                                     max={250} // Giá trị tối đa
-                                    onValuesChange={(values) => setPriceRange(values)} // Cập nhật giá trị khi kéo thanh
+                                    onValuesChange={(values) => handleSliderChange(values)} // Cập nhật giá trị khi kéo thanh
                                     selectedStyle={{
                                         backgroundColor: '#0392af' // Màu của phần đã chọn
                                     }}
